@@ -18,7 +18,8 @@ class TestWebCrawler:
         assert crawler.max_depth == 2
         assert crawler.max_pages == 50
         assert crawler.delay == 1.0
-        assert 'example.com' in crawler.allowed_domains
+        # Verify domain was properly extracted from start_url
+        assert crawler.allowed_domains == ['example.com']
         assert len(crawler.visited_urls) == 0
         assert len(crawler.pages_data) == 0
     
@@ -155,7 +156,10 @@ class TestWebCrawler:
         results = crawler.crawl()
         
         assert len(results) > 0
-        assert 'https://example.com' in crawler.visited_urls
+        # Verify the start URL was visited
+        assert len(crawler.visited_urls) > 0
+        start_url_visited = any(url == 'https://example.com' for url in crawler.visited_urls)
+        assert start_url_visited
     
     @patch('crawler.WebCrawler.fetch_page')
     @patch('crawler.time.sleep')
